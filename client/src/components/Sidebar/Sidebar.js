@@ -40,7 +40,7 @@ const Sidebar = () => {
     const handleSelect = (e) => {
         const target = e.value;
         const companyObj = allCompanies.filter(company => company.name === target);
-        window.location = `/sellers/${companyObj[0].id}`
+        window.location = `/sellers/${companyObj[0]._id}`
     }
 
     let sortedCompanies;

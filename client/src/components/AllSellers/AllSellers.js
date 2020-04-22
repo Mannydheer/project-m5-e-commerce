@@ -39,7 +39,7 @@ const AllSellers = () => {
                     {allCompanies && allCompanies.map(company => {
                         return (
                             <ContentContainer key={company.name}>
-                                <Link to={`/sellers/${company.id}`}>
+                                <Link to={`/sellers/${company._id}`}>
                                     <p>{company.name}</p>
                                 </Link>
                                 <a href={company.url} target="_blank">Visit Website</a>

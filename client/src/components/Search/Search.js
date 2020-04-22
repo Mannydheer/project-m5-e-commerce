@@ -117,7 +117,7 @@ const Search = ({ triggerSearchBar, setScroll, scroll }) => {
                     return (
                         <div >
                             <ul>
-                                <EachList onClick={() => handlePushItem(result.id)}>
+                                <EachList onClick={() => handlePushItem(result._id)}>
                                     {firstHalf}
                                     <Strong>{bolded}</Strong>
                                     {secondHalf}

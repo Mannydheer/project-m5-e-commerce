@@ -1,3 +1,4 @@
+'use strict';
 
 
 //THIS IS A COPY!!!
@@ -5,176 +6,431 @@ const items = require('./data/items.json');
 const companies = require('./data/companies.json');
 const users = require('./data/users.json');
 
-const handleAllData = (req, res) => {
 
-    //happens when app render
-    res.status(200).send(items)
+//MONGODB
+const MongoClient = require('mongodb').MongoClient;
+const uri = `mongodb+srv://mannyDb:nbjlHmpzLMbDb9zx@cluster0-ucphp.mongodb.net/test?retryWrites=true&w=majority`;
+
+const dbName = 'Ecommerce';
+const collection = 'Items'
+const collection2 = 'Companies'
+const collectionUsers = 'Users'
+const assert = require('assert')
 
 
-}
+var ObjectId = require('mongodb').ObjectID;
 
-//handle clicking on a category
-const handleCategory = (req, res) => {
-    let category = req.params.category;
-    let page = req.query.page;
-    let limit = req.query.limit;
-    if (page >= 0) {
-        let matchedCategories = items.filter(item => {
-            if (item.category == category) {
-                return item;
-            }
-        })
-        //if the array is greater than 9 items...
-        if (matchedCategories.length >= 8) {
-            let firstIndex = (page - 1) * limit; //0
-            let endIndex = (limit * page);//9
-            let slicedItems = matchedCategories.slice(firstIndex, endIndex);
-            res.send(slicedItems)
+
+//
+
+//MONGODB INTEGRATION DONE. 
+const handleAllData = async (req, res) => {
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleAllData")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find()
+                .toArray()
+                .then(data => {
+                    res.status(200).send(data)
+                })
         }
-        else {
-            res.send(matchedCategories)
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleAllData')
+            res.status(500).json({ status: 500, message: error.message })
         }
-    }
-
-}
-//handle clicking on each item
-const handleItemId = (req, res) => {
-    let itemId = req.params.id;
-    //if we received an itemId
-    //filter through data
-    let filteredItem = items.find(item => {
-        if (itemId == item.id) {
-            return item
+        finally {
+            console.log('disconnected')
+            client.close();
         }
     })
-    res.send(filteredItem)
-
-
 }
 
+//handle clicking on each item
+const handleItemId = async (req, res) => {
+    let itemId = parseInt(req.params.id);
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleItemId")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .findOne({ _id: itemId })
+                .then(data => {
+                    res.status(200).json(data)
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleItemId')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+}
 
 
 const handleItemsData = (req, res) => {
-    //caterogy, name, price, image, companyID
+
     let sort = req.query.sort
     console.log(sort)
     let page = req.query.page; //1
     let limit = req.query.limit; //9
 
-    let sortItems;
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleItemsData")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find()
+                .toArray()
+                .then(items => {
+                    let sortItems;
+                    if (sort === 'lowToHigh') {
+                        sortItems = items.slice().sort(function (a, b) {
 
+                            return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''))
+                        });
+                    }
+                    else if (sort === 'highToLow') {
+                        sortItems = items.slice().sort(function (a, b) {
+                            return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''))
+                        })
+                    } else if (sort === 'bestMatch') {
+                        sortItems = items;
+                    }
 
-    if (sort === 'lowToHigh') {
-        sortItems = items.slice().sort(function (a, b) {
+                    let firstIndex = (page - 1) * limit; //0
+                    let endIndex = (limit * page);//9
+                    let slicedItems = sortItems.slice(firstIndex, endIndex)
 
-            return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''))
-        });
+                    //will send back 9 items.
 
-    }
-    else if (sort === 'highToLow') {
-        sortItems = items.slice().sort(function (a, b) {
-            return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''))
-        })
-    } else if (sort === 'bestMatch') {
-        sortItems = items;
-    }
+                    res.status(200).send(slicedItems)
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleItemsData')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+}
 
-    let firstIndex = (page - 1) * limit; //0
-    let endIndex = (limit * page);//9
-    let slicedItems = sortItems.slice(firstIndex, endIndex)
+const handleBodyItems = (req, res) => {
 
-    //will send back 9 items.
-    res.send(slicedItems)
+    let bodypart = req.params.body;
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleBodyItems")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find({ body_location: bodypart })
+                .toArray()
+                .then(filteredBodyItems => {
+                    console.log(filteredBodyItems)
+                    res.status(200).send(filteredBodyItems);
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleBodyItems')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
 }
 
 
-const handleCompany = (req, res) => {
+
+//handle clicking on a category
+const handleCategory = async (req, res) => {
+
+    let category = req.params.category;
+    let page = req.query.page;
+    let limit = req.query.limit;
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleCategory")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find()
+                .toArray()
+                .then(items => {
+                    if (page >= 0) {
+                        let matchedCategories = items.filter(item => {
+                            if (item.category == category) {
+                                return item;
+                            }
+                        })
+                        //if the array is greater than 9 items...
+                        if (matchedCategories.length >= 8) {
+                            let firstIndex = (page - 1) * limit; //0
+                            let endIndex = (limit * page);//9
+                            let slicedItems = matchedCategories.slice(firstIndex, endIndex);
+                            res.send(slicedItems)
+                        }
+                        else {
+                            res.send(matchedCategories)
+                        }
+                    }
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleCategory')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+}
+
+
+
+const handleRelatedItems = async (req, res) => {
+
+    let category = req.params.category;
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleRelatedItems")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find({ category: category })
+                .toArray()
+                .then(filteredCategories => {
+
+                    let reducedItems = filteredCategories.filter((item, index) => {
+                        if (index < 10) {
+                            return item
+                        }
+                    })
+                    res.status(200).json(reducedItems)
+
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleRelatedItems')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+
+
+}
+
+
+
+
+
+const handleCompany = async (req, res) => {
+
     //grab company ID
-    let companyId = req.params.companyId;
-    //find associated company and return to the front end.
-    let filteredCompany = companies.find(company => {
-        if (company.id == companyId) {
-            return (company)
+    let companyId = parseInt(req.params.companyId);
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleCompany")
+        try {
+            const db = client.db(dbName)
+            let filteredCompany = await db.collection(collection2).findOne({ _id: companyId })
+
+            let companyItems = await db.collection(collection).find({ companyId: companyId }).toArray()
+
+            Promise.all([filteredCompany, companyItems])
+                .then(() => {
+                    let company = {
+                        info: filteredCompany,
+                        items: companyItems
+                    }
+                    res.status(200).send(company);
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleCompany')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
         }
     })
 
-    let companyItems = items.filter(item => {
-        if (item.companyId == companyId) {
-            return item;
+}
+
+
+const handleSellers = async (req, res) => {
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleSellers")
+        try {
+            const db = client.db(dbName)
+            //comapnies collection
+            await db.collection(collection2)
+                .find()
+                .toArray()
+                .then(companies => {
+                    res.status(200).json(companies)
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleSellers')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
         }
     })
-    //comment
-    let company = {
-        info: filteredCompany,
-        items: companyItems
-    }
-    res.status(200).send(company);
+
 }
 
-const handleSellers = (req, res) => {
 
-    res.send(companies);
-}
-const handleUpdateStock = (req, res) => {
+
+
+
+
+
+
+
+const handleUpdateStock = async (req, res) => {
+
     let cartInfo = req.body;
-
+    //beofre connecting - if no items in cart, don't do any updates..
     if (cartInfo.cartCounter === 0) {
-        //change for a different status
         res.status(300).send({ response: "No changes in stock levels" })
     }
     else {
+        const client = new MongoClient(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         let arrayCart = Object.keys(cartInfo);
-        console.log(arrayCart)
+        //grab all cart ids
         let slicedIds = arrayCart.slice(0, arrayCart.length - 1)
-        //loop though items array and change values. 
-        slicedIds.forEach(id => {
-            //find the corresponding item in the item array. 
-            let selectedItem = items.find(item => {
-                if (item.id == id) {
-                    return item
-                }
-            })
-            console.log(selectedItem.numInStock, 'BEFORE')
-            console.log(cartInfo[id].quantity, 'QUANTITY')
-            //once found... update sotck levels. Only if there are still in stock
-            if (selectedItem.numInStock > 0) {
-                //for backend update
-                selectedItem.numInStock -= cartInfo[id].quantity;
-                //for front end update of cartstate
-                //initialize it to the backends stock lvl
-                cartInfo[id].numInStock = selectedItem.numInStock;
+        //connect to db
+        client.connect(async (err) => {
+            if (err) throw { Error: err, message: "error occured connected to DB" }
+            console.log("Connected to DB in handleUpdateStock")
+            console.log(slicedIds, 'HERE')
+            try {
+                const db = client.db(dbName)
+                slicedIds.forEach(async (id) => {
 
-                console.log(selectedItem.numInStock, 'AFTER')
+                    try {
+                        let item = await db.collection(collection)
+                            .findOne({ _id: parseInt(id) })
+                        //once found 
+                        if (!item) {
+                            res.status(404).json({ message: "Item Not Found" })
+                        }
+                        if (item.numInStock - cartInfo[id].quantity >= 0) {
+
+                            console.log(cartInfo[id].quantity)
+                            let r = await db.collection(collection)
+                                .updateOne({ _id: parseInt(id) }, { $inc: { "numInStock": -cartInfo[id].quantity } })
+                            assert(1, r.matchedCount)
+                            assert(1, r.modifiedCount)
+
+                            //find it again.
+                            await db.collection(collection)
+                                .findOne({ _id: parseInt(id) })
+                                .then(data => {
+                                    cartInfo[id].numInStock = data.numInStock;
+                                    res.status(200).send({
+                                        response: 'Quantities successfully updated',
+                                        updatedCartState: cartInfo
+                                    })
+                                })
+                        }
+                        else {
+                            res.status(404).json({ message: "Item is out of stock." })
+                        }
+                    }
+                    catch (err) {
+                        res.status(400).json({ message: "Error in try/catch inside handleUpdateStock, inside the forEach." })
+                    }
+                })
             }
-            // else {
-            //     res.status(404).send({
-            //         response: "No stock left.",
-            //         Item: selectedItem
-            //     })
-            // }
+            catch (error) {
+                console.log(error.stack, 'Catch Error in handleUpdateStock')
+                res.status(500).json({ status: 500, message: error.message })
+            }
+            finally {
+                // client.close()
+                console.log('disconnected')
+            }
         })
-        res.status(200).send({
-            response: 'Quantities successfully updated',
-            updatedCartState: cartInfo
-        })
-
-
     }
-}
-
-
-const handleBodyItems = (req, res) => {
-    let bodypart = req.params.body;
-
-    let filteredBodyItems = items.filter(item => {
-        if (item.body_location == bodypart) {
-            return item;
-        }
-    })
-
-    res.status(200).send(filteredBodyItems);
 
 }
+
+
+
+
+
+
 
 const handleSignUp = (req, res) => {
     let userInfo = req.body;
@@ -183,191 +439,235 @@ const handleSignUp = (req, res) => {
     if (!userInfo) {
         res.status(400).send('Unable to Process Sign Up Request - Bad')
     }
-    else {
-        let existingUser = users.find(user => {
-            if (user.user == userInfo.user) {
-                console.log('inside')
-                return ('That user already exists!')
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleSignUp")
+        try {
+            const db = client.db(dbName)
+            //comapnies collection
+            let checkForUser = await db.collection(collectionUsers).findOne({ user: userInfo.user })
+
+            if (checkForUser === null) {
+                let name = userInfo.user.split('@')[0]
+                userInfo.name = name;
+                await db.collection(collectionUsers).insertOne(userInfo)
+                res.status(200).send({ name })
             }
-        })
-        //change this
-        //if undefined then there is no user and can proceed with sign up
-        if (existingUser == undefined) {
-            users.push(userInfo)
-            let name = userInfo.user.split('@')[0]
-            res.status(200).send({ name })
+            else {
+                res.status(401).send({ message: 'User already exists' })
+            }
+
         }
-        else {
-            res.status(401).send({ message: 'User already exists' })
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleSellers')
+            res.status(500).json({ status: 500, message: error.message })
         }
-    }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
 }
+
+
+
 
 const handleLogin = (req, res) => {
-
     let loginInfo = req.body;
-    console.log(loginInfo, 'THIS IS LOGIN INFO')
 
-
+    //if no info
     if (!loginInfo) {
         res.status(400).send('Unable to Process Login Request - Bad')
+
     }
-    //meaning there is something in the array of users 
     else if (loginInfo) {
-        let getUserInfo = users.find(user => {
-            if (user.user === loginInfo.user && user.pass === loginInfo.pass) {
-                return (user)
+
+        const client = new MongoClient(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        //connect to db
+        client.connect(async (err) => {
+            if (err) throw { Error: err, message: "error occured connected to DB" }
+            console.log("Connected to DB in handleSignUp")
+            try {
+                const db = client.db(dbName)
+                //comapnies collection
+                let checkForUser = await db.collection(collectionUsers).findOne({ user: loginInfo.user })
+                if (!checkForUser) {
+                    res.status(404).json({ message: "User not found." })
+                } else {
+                    if (checkForUser.user === loginInfo.user && checkForUser.pass === loginInfo.pass) {
+                        let name = checkForUser.user.split('@')[0]
+                        let data = checkForUser.cart; //if its empty, it is fine as it wont effect the front end.
+                        console.log(data, 'this is data')
+                        res.status(200).send({ name, data })
+                    }
+                    else {
+                        res.status(401).json({ message: "Wrong password was entered." })
+                    }
+                }
+            }
+            catch (error) {
+                console.log(error.stack, 'Catch Error in handleSellers')
+                res.status(500).json({ status: 500, message: error.message })
+            }
+            finally {
+                console.log('disconnected')
+                client.close();
             }
         })
-        //if user was found
-        if (getUserInfo !== undefined) {
-            //send only the Profile Name
-            let name = getUserInfo.user.split('@')[0]
-            let data = getUserInfo.cart;
-            console.log(data, 'this is data')
 
-            res.status(200).send({ name, data })
-        } else {
-            res.status(404).send('User Not Found')
-        }
     }
-    //can remove
-    else {
-        res.status(401).send('Error occured Authenticating')
-    }
+
+
 }
 
+
+
+
+
+
+
+
+
 const handleCartItemsForUser = (req, res) => {
+
     let name = req.params.user; //just the name
     let notYetPurchasedCartItems = req.body; //array of objects
 
-    console.log(req.body)
-    //first thing is find the user.
-    console.log(name, 'THIS IS NAME');
-    let userInfo = users.find((user) => {
-        if (name == user.user.split('@')[0]) {
-            return user;
-        }
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
     });
-    //user was found
-    if (userInfo !== undefined) {
-        userInfo.cart = notYetPurchasedCartItems;
-        res.status(200).send({ success: true });
-    }
-    else {
-        res.status(401).send({ success: false });
-    }
-    // res.status(200);
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleCartItemsForUser")
+        try {
+
+            const db = client.db(dbName)
+            //comapnies collection
+            let checkForUser = await db.collection(collectionUsers).findOne({ name: name })
+            if (!checkForUser) {
+                res.status(401).send({ success: false });
+            }
+            else {
+                await db.collection(collectionUsers).updateOne({ name: name }, { $set: { cart: notYetPurchasedCartItems } })
+                res.status(200).send({ success: true });
+            }
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleCartItemsForUser')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+
 };
 
-const handleRelatedItems = (req, res) => {
-    let category = req.params.category;
-    let filteredCategories = items.filter((item, index) => {
-        if (category == item.category) {
-            return item
-        }
-    })
-    let reducedItems = filteredCategories.filter((item, index) => {
-        if (index < 10) {
-            return item
-        }
-    })
-    res.status(200).send(reducedItems)
-}
 
 
 
 
 const handleSearch = (req, res) => {
+
+
     let search = req.query.search.toLowerCase();
     let splitSearch;
 
     let page = req.query.page; //1
     let limit = req.query.limit; //9
-    console.log(limit)
     let sort = req.query.sort;
     let searchedItems = [];
 
 
-    if (search.includes(" ")) {
-        splitSearch = search.split(" ")
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleItemsData")
+        try {
+            const db = client.db(dbName)
+            await db.collection(collection)
+                .find()
+                .toArray()
+                .then(items => {
+                    let sortItems;
 
-        console.log("here is split search", splitSearch)
+                    if (search.includes(" ")) {
+                        splitSearch = search.split(" ")
 
-        // for each item
-        let searchArray = items.filter(item => {
-            //check if each search term is present in item name if not set allFound to false
-            let allFound = true;
-            splitSearch.forEach(searchTerm => {
-                allFound = (item.name.toLowerCase().includes(searchTerm.toLowerCase())) ? allFound : false
-                console.log("CONDITION: ", (item.name.toLowerCase().includes(searchTerm.toLowerCase)), "SEARCHTERM: ", searchTerm, "ITEM: ", item.name)
+                        console.log("here is split search", splitSearch)
 
-            })
-            return allFound;
-            // if (allFound) {
-            //     console.log("ALLFOUND: ", allFound, "ITEM: ", item)
-            //     return item;
-            // }
-        })
+                        // for each item
+                        let searchArray = items.filter(item => {
+                            //check if each search term is present in item name if not set allFound to false
+                            let allFound = true;
+                            splitSearch.forEach(searchTerm => {
+                                allFound = (item.name.toLowerCase().includes(searchTerm.toLowerCase())) ? allFound : false
+                                console.log("CONDITION: ", (item.name.toLowerCase().includes(searchTerm.toLowerCase)), "SEARCHTERM: ", searchTerm, "ITEM: ", item.name)
+                            })
+                            return allFound;
+                        })
 
-        console.log(" here is the search Array", searchArray)
+                        console.log(" here is the search Array", searchArray)
+                        searchedItems = searchArray
 
-        searchedItems = searchArray
+                    } else {
+                        searchedItems = items.filter(item => {
+                            if (item.name.toLowerCase().includes(search)) {
+                                return item;
+                            }
+                        })
+                    }
+                    if (sort === 'lowToHigh') {
+                        console.log('low to high')
+                        sortItems = searchedItems.slice().sort(function (a, b) {
 
-    } else {
+                            return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''))
+                        });
+                    }
+                    else if (sort === 'highToLow') {
+                        console.log('high to low')
+                        sortItems = searchedItems.slice().sort(function (a, b) {
+                            return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''))
+                        })
+                    } else if (sort === 'bestMatch') {
+                        console.log("best match last else if", items[0].price)
+                        sortItems = searchedItems;
+                    }
 
-        searchedItems = items.filter(item => {
-            if (item.name.toLowerCase().includes(search)) {
-                return item;
-            }
+                    let firstIndex = (page - 1) * limit; //0
+                    let endIndex = (limit * page);//9
+                    let slicedItems = sortItems.slice(firstIndex, endIndex)
 
-        })
-
-        console.log("the sort here is", sort)
-    }
-
-    /* const searchingQuery = () => { 
-      if (item.name.toLowerCase().includes(search)) {
-              return item;
-          }
-      }
-           */
-
-
-    if (sort === 'lowToHigh') {
-        console.log('low to high')
-        sortItems = searchedItems.slice().sort(function (a, b) {
-
-            return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''))
-        });
-
-    }
-    else if (sort === 'highToLow') {
-        console.log('high to low')
-        sortItems = searchedItems.slice().sort(function (a, b) {
-
-            return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''))
-        })
-
-
-    } else if (sort === 'bestMatch') {
-        console.log("best match last else if", items[0].price)
-
-        sortItems = searchedItems;
-
-    }
-
-
-
-    let firstIndex = (page - 1) * limit; //0
-    let endIndex = (limit * page);//9
-    let slicedItems = sortItems.slice(firstIndex, endIndex)
-
-
-    //will send back 9 items.
-    res.send(slicedItems)
-
-
+                    //will send back 9 items.
+                    res.status(200).json(slicedItems)
+                })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleItemsData')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
 }
 
 

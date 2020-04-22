@@ -83,7 +83,7 @@ const ItemGrid = () => {
                             <GridWrapper>
                                 {currentItems.items.map((item, arrayNum) => {
                                     return (
-                                        <StyledLink key={item.id} to={`/item/${item.id}`}>
+                                        <StyledLink key={item.id} to={`/item/${item._id}`}>
                                             {/*SEE INSIDE RENDER ITEM FOR DISPATCH TO ADD TO CART - MANNY */}
 
                                             <RenderItem key={item.id} item={item}>

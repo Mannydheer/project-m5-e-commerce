@@ -25,6 +25,8 @@ const Item = (props) => {
 
     const { id } = useParams();
 
+    console.log(id, 'THIS IS ID')
+
     const handleQuantity = (event) => {
         const value = event.target.value;
         if (value > itemInfo.numInStock) {
@@ -37,23 +39,7 @@ const Item = (props) => {
 
     const handleAddToCart = (intemInfo, e) => {
         dispatch(addItem({ ...itemInfo, quantity: quantity }));
-        // let itemId = e.target.id;
-        // if (!inCart) {
-        //     setInCartAnimation([
-        //         ...inCartAnimation,
-        //         {
-
-        //             id: id
-        //         }
-
-        //     ]);
-        // }
-
-
     }
-    // if (inCartAnimation.length != 0) {
-    //     console.log(inCartAnimation)
-    // }
 
     useEffect(() => {
 
@@ -77,7 +63,6 @@ const Item = (props) => {
     if (!loaded) {
         return null
     }
-    console.log(itemInfo.id)
 
     return (
         <React.Fragment>

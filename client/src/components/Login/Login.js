@@ -28,7 +28,7 @@ import { LoginCart, receiveUserInfo, requestUserInfo, receiveUserInfoError } fro
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
+            {'Copyright ©  '}
             <Link color="inherit" href="/">
                 Tech6Gear.com
       </Link>{' '}
@@ -139,7 +139,7 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
             catch (err) {
                 console.log(err, 'CATCH ERROR')
             }
-
+            
 
         }
         handleLogin();

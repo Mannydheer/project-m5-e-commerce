@@ -57,7 +57,7 @@ const RelatedItems = ({ itemInfo }) => {
 
                         {relatedItems !== null &&
                             relatedItems.map(item => {
-                                return <StyledLink key={item.id} to={`/item/${item.id}`}>
+                                return <StyledLink key={item._id} to={`/item/${item._id}`}>
 
                                     <RenderItem item={item}></RenderItem>
                                     {item.numInStock == 0 && <StyledStock> Out Of<br></br> Stock</StyledStock>

@@ -16,6 +16,8 @@ const SearchPage = () => {
     const [sortState, setSortState] = useState('bestMatch')
     const [page, setPage] = useState(1)
 
+    let { id } = useParams();
+
 
 
 
@@ -25,7 +27,7 @@ const SearchPage = () => {
             .then(res => res.json())
             .then(data => setSearched(data))
         //.catch(() => window.alert('Your search returned no results.'))
-    }, [query, sortState])
+    }, [query, sortState, id])
 
     console.log(searched)
     if (searched === null) {

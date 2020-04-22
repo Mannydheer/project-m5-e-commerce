@@ -8,7 +8,7 @@ export default function cartReducer(state = initialState, action) {
       return {
         ...state,
         cartCounter: state.cartCounter + 1,
-        [action.item.id]: {
+        [action.item._id]: {
           ...action.item,
           quantity: action.item.quantity ? action.item.quantity : 1,
         },
@@ -17,14 +17,14 @@ export default function cartReducer(state = initialState, action) {
 
     case "REMOVE_ITEM": {
       const newState = { ...state, cartCounter: state.cartCounter - 1 };
-      delete newState[action.item.id];
+      delete newState[action.item._id];
       return newState
     }
 
     case "UPDATE_QUANTITY": {
       return {
         ...state,
-        [action.item.id]: {
+        [action.item._id]: {
           ...action.item,
           quantity: action.newQuantity,
         },
@@ -76,22 +76,22 @@ export const isInCartSelector = (state, itemId) => {
   const items = { ...state };
   delete items.cartCounter;
   let products = Object.values(items);
-  return products.find(product => product.id === itemId);
+  return products.find(product => product._id === itemId);
 };
 
 
 export const cartTotalSelector = (state) => {
-    const items = {...state};
-    // delete items.cartCounter;
-    let sum = Object.values(items).reduce((total, item) => {
-      console.log('########item: ', item);
-      if (item.price) {
-        let parsedPrice = parseFloat(item.price.slice(1));
-        total += (item.quantity * parsedPrice);
-      }
-        return total;
-    }, 0);
-    return sum;
+  const items = { ...state };
+  // delete items.cartCounter;
+  let sum = Object.values(items).reduce((total, item) => {
+    console.log('########item: ', item);
+    if (item.price) {
+      let parsedPrice = parseFloat(item.price.slice(1));
+      total += (item.quantity * parsedPrice);
+    }
+    return total;
+  }, 0);
+  return sum;
 };
 
 export const getItemsAndQuantities = (cartState) => {
@@ -100,7 +100,7 @@ export const getItemsAndQuantities = (cartState) => {
   let purchaseArray = Object.values(items);
   let containerForInventory = {};
   purchaseArray.forEach(item => {
-    containerForInventory[item.id] = item.quantity;
+    containerForInventory[item._id] = item.quantity;
   });
   return containerForInventory;
 };
