@@ -1,12 +1,5 @@
 'use strict';
 
-
-//THIS IS A COPY!!!
-const items = require('./data/items.json');
-const companies = require('./data/companies.json');
-const users = require('./data/users.json');
-
-
 //MONGODB
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://mannyDb:nbjlHmpzLMbDb9zx@cluster0-ucphp.mongodb.net/test?retryWrites=true&w=majority`;
