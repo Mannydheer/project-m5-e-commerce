@@ -70,9 +70,9 @@ const ReusableGrid = ({ itemSource, exportPage, exportSort }) => {
 
                             {itemSource.map((item, arrayNum) => {
                                 return (
-                                    <Link to={`/item/${item.id}`}>
+                                    <Link to={`/item/${item._id}`}>
                                         {/*SEE INSIDE RENDER ITEM FOR DISPATCH TO ADD TO CART - MANNY */}
-                                        <RenderItem key={item.id} item={item}></RenderItem>
+                                        <RenderItem key={item._id} item={item}></RenderItem>
                                     </Link>
                                     // >>>>>>> master
                                     // >>>>>>> master

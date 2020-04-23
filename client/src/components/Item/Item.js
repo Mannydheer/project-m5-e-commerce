@@ -19,7 +19,7 @@ const Item = (props) => {
     const [loaded, setLoaded] = useState(false);
     const [quantity, setQuantity] = useState(0);
     // const [inCartAnimation, setInCartAnimation] = useState([]);
-    const inCart = useSelector(state => isInCartSelector(state.cartState, itemInfo ? itemInfo.id : undefined));
+    const inCart = useSelector(state => isInCartSelector(state.cartState, itemInfo ? itemInfo._id : undefined));
 
     const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ const Item = (props) => {
         }
     };
 
-    const handleAddToCart = (intemInfo, e) => {
+    const handleAddToCart = (itemInfo, e) => {
         dispatch(addItem({ ...itemInfo, quantity: quantity }));
     }
 

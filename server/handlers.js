@@ -425,6 +425,9 @@ const handleUpdateStock = async (req, res) => {
 
 
 
+
+
+
 const handleSignUp = (req, res) => {
     let userInfo = req.body;
 
@@ -449,6 +452,7 @@ const handleSignUp = (req, res) => {
             if (checkForUser === null) {
                 let name = userInfo.user.split('@')[0]
                 userInfo.name = name;
+                userInfo.CouponCode = Math.floor(Math.random() * (10000 - 9000 + 1) + 9000);
                 await db.collection(collectionUsers).insertOne(userInfo)
                 res.status(200).send({ name })
             }
@@ -664,8 +668,51 @@ const handleSearch = (req, res) => {
 }
 
 
+
+const handleGetEmails = async (req, res) => {
+
+    const { name } = req.params;
+
+    console.log(name, ' THIS IS THE NAME PF USER')
+
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleGetEmails")
+        try {
+            const db = client.db(dbName)
+            //comapnies collection
+            let checkForUser = await db.collection(collectionUsers).findOne({ name: name })
+
+            if (!checkForUser) {
+                res.status(404).json({ message: 'That user does not exist.' })
+            } else {
+                res.status(200).json({ CouponCode: checkForUser.CouponCode, message: 'Coupon successfuly retrieved' })
+            }
+
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleSellers')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+
+
+}
+
+
 module.exports = {
     handleSignUp, handleBodyItems, handleRelatedItems,
     handleAllData, handleCompany, handleItemId, handleCategory,
-    handleItemsData, handleSellers, handleLogin, handleCartItemsForUser, handleUpdateStock, handleSearch
+    handleItemsData, handleSellers, handleLogin, handleCartItemsForUser, handleUpdateStock, handleSearch,
+    handleGetEmails
 };

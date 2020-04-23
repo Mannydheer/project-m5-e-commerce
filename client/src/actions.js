@@ -80,6 +80,10 @@ export const receiveUserInfoError = () => ({
 export const logOutUser = () => ({
     type: 'LOGOUT',
 })
+export const getCouponCode = (code) => ({
+    type: 'COUPON',
+    code,
+})
 
 //GET ALL COMPANIES FROM DATABASE
 

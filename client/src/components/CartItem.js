@@ -10,22 +10,28 @@ const CartItem = (props) => {
   const [subtotal, setSubtotal] = useState(props.price);
   const dispatch = useDispatch();
 
+
   const handleQuantity = (event) => {
-    const value = event.target.value;
-    if (value > props.numInStock) {
+    let value = event.target.value;
+
+    console.log(typeof value, 'THIS IS THE TYPE OF')
+
+    if (parseInt(value) > props.numInStock) {
       return
-    } else {
+    }
+    else if (parseInt(value) >= 0) {
       dispatch(updateQuantity(props, parseInt(value)));
     }
-
+    else if (value === '') {
+      //changes props.quantity to be '' 
+      dispatch(updateQuantity(props, ''));
+    }
   };
-
   useEffect(() => {
     if (props.price) {
-    setSubtotal(props.price.slice(1) * props.quantity);
+      setSubtotal(props.price.slice(1) * props.quantity);
     }
   }, [handleQuantity]);
-
   return (
     <form>
       <Container>
@@ -46,15 +52,14 @@ const CartItem = (props) => {
             <StyledInput
               type="number"
               min="1"
-              value={props.quantity}
               onChange={handleQuantity}
+              value={props.quantity}
             />}
         </div>
         <div style={{ gridArea: "1 / 6 / 2 / 7" }}>
           <GreyP>${Math.round(subtotal * 100) / 100}</GreyP>
         </div>
       </Container>
-
       <MobileContainer>
         <MobileProducts>
           <StyledRemoveItemButton onClick={() => dispatch(removeItem(props))}>❌</StyledRemoveItemButton>

@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { FiShoppingCart } from 'react-icons/fi'
 import { FiSearch, FiX } from 'react-icons/fi'
 import { FaFacebookF, FaTwitter, FaPinterest, FaYoutube, FaRegUser } from 'react-icons/fa'
+import Mail from '../Mail/Mail';
 
 import Login from '../Login';
 import Signup from '../Signup';
@@ -38,7 +39,6 @@ const Navbar = ({ setLoginState, loginState }) => {
     let history = useHistory();
     const dispatch = useDispatch();
 
-    console.log(history)
 
     const currentPath = history.location.pathname;
 
@@ -91,7 +91,6 @@ const Navbar = ({ setLoginState, loginState }) => {
 
 
     const handleKeypress = (e) => {
-        console.log(e);
         if (e.keyCode === 27) {
             setTriggerSearchBar(false)
         }
@@ -134,6 +133,7 @@ const Navbar = ({ setLoginState, loginState }) => {
                     {loginState && <Login setLoginState={setLoginState}></Login>}
                     {loginState && <Signup setLoginState={setLoginState}></Signup>}
                     {!loginState && userLoggedIn.status == "authenticated" && <StyledSignUp>
+                        <Mail setLoginState={setLoginState}></Mail>
                         <User>{userLoggedIn.user.name}</User>
                         <StyledButton onClick={handleResetLogging}>Logout</StyledButton>
                     </StyledSignUp>}
@@ -289,6 +289,7 @@ const LoginContainerMobile = styled.div`
 const StyledUserIcon = styled(FaRegUser)`
     margin-right: 1.3rem; 
 `
+
 
 const StyledButton = styled.button`
     width: 70px; 

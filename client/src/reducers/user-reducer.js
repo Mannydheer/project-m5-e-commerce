@@ -31,6 +31,12 @@ export default function userReducer(state = intitialState, action) {
                 ...intitialState
             }
         }
+        case "COUPON": {
+            return {
+                ...state,
+                coupon: action.code
+            }
+        }
         default:
             return state;
     }

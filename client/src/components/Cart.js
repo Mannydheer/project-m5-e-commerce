@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { itemsSelector, cartTotalSelector, getItemsAndQuantities } from '../reducers/cart-reducer';
 import { clearCart, updateCartStateBackend } from '../actions';
+import { useParams, Link, useHistory, useLocation } from "react-router-dom"
+
 
 
 // ------------ COMPONENTS ------------
@@ -16,64 +18,96 @@ import { PageContainer } from './CONSTANTS';
 const Cart = () => {
     const [shipping, setShipping] = useState(9.43);
     const [redirect, setRedirect] = useState(false)
+    const [purchaseBool, setPurchaseBool] = useState(false)
     const [coupon, setCoupon] = useState("❔")
+    const [couponValue, setCouponValue] = useState('');
+    const [couponState, setCouponState] = useState(false);
     const dispatch = useDispatch();
 
     const state = useSelector(state => itemsSelector(state.cartState));
     const total = useSelector(state => cartTotalSelector(state.cartState));
-    const userLoggedIn = useSelector(state => state.userReducer)
+    const [deductTotal, setDeductTotal] = useState(1);
 
 
-    console.log(state, 'THIS IS TATE IN CART')
     //if its a guest. 
     const cartState = useSelector(state => state.cartState);
     const inventoryState = useSelector(state => state.inventoryReducer);
+    const userLoggedIn = useSelector(state => state.userReducer)
+
 
     const purchaseBag = useSelector(state => getItemsAndQuantities(state.cartState));
-    console.log('purchaseBag: ', purchaseBag);
+
+    //coupon code control
+    let location = useLocation().search.replace('?', '')
+
+    useEffect(() => {
+        //only if logged in. 
+        if (userLoggedIn.status === "authenticated" && location === 'apply' && cartState.cartCounter !== 0) {
+            setCouponValue(userLoggedIn.coupon)
+        }
+        //if logged in but didnt go see mail couponds
+        else if (userLoggedIn.status === "authenticated" && location !== 'apply') {
+            setCouponValue('')
+        }
+    }, [location, userLoggedIn])
+
+
 
 
     // let redirect = false;
 
     const handleInventory = (event) => {
-        setRedirect(true);
 
-        // on Click of MakePurchsase, will post to back end and ipdate stock levels
-        const handleUpdateStock = async () => {
 
-            let response = await fetch(`/updateStock`, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(cartState)
-            })
-            //to ensure
-            //snakcbar item deleted - item added. !!!
-            let received = await response.json();
-            console.log(received, 'STOCK LEVELS UPDATED')
+        if (userLoggedIn.status === "authenticated") {
+            console.log('INSIDE')
+            setRedirect(true);
+            // on Click of MakePurchsase, will post to back end and ipdate stock levels
+            const handleUpdateStock = async () => {
+                let response = await fetch(`/updateStock`, {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(cartState)
+                })
+                //to ensure
+                //snakcbar item deleted - item added. !!!
+                let received = await response.json();
+                console.log(received, 'STOCK LEVELS UPDATED')
+                dispatch(updateCartStateBackend(received.updatedCartState))
 
-            dispatch(updateCartStateBackend(received.updatedCartState))
-            // dispatch(updateCartStateBackend)
+                // dispatch(updateCartStateBackend)
+            }
+            handleUpdateStock();
         }
-        handleUpdateStock();
-
-        // dispatch(clearCart());
-
-        // <Redirect to="/paymentMethod" />
+        else {
+            setPurchaseBool(true)
+        }
     }
 
     const handleTotal = () => {
+
+        console.log(deductTotal, 'INSINDE HANDLE TOTLA')
         if (cartState.cartCounter === 0) {
             return
         } else {
-            return (
-                Math.round((total + shipping) * 100) / 100
-            );
+
+            console.log(couponValue, userLoggedIn.coupon)
+            if (userLoggedIn.status === "authenticated" && couponValue === userLoggedIn.coupon || parseInt(couponValue) === userLoggedIn.coupon) {
+                return (
+                    (Math.round((total + shipping) * 100) / 100) * deductTotal
+                );
+            }
+            else {
+                return (
+                    (Math.round((total + shipping) * 100) / 100)
+                );
+            }
+
         }
     }
-
     const handleShipping = () => {
         if (cartState.cartCounter === 0) {
             return
@@ -82,70 +116,97 @@ const Cart = () => {
         }
     }
 
-    const handleCoupon = async (event) => {
+    const handleCoupon = (event) => {
         event.preventDefault();
-        await console.log('clicked')
-        //fetch
-        //inner text changes to ❌ or ✔ depending on if coupon is good
-        if (1 > 2) { //fix condition according to fetch
-            setCoupon("❌")
-        } else {
+
+        console.log(couponValue, userLoggedIn.coupon)
+        if (couponValue === userLoggedIn.coupon || parseInt(couponValue) === userLoggedIn.coupon) {
+            setDeductTotal(0.90)
             setCoupon("✔")
+        }     //inner text changes to ❌ or ✔ depending on if coupon is good
+        else {
+            setCoupon("❌")
         }
+
+        if (coupon === "❌") {
+            setCoupon("❔")
+            setCouponValue('')
+        }
+        else if (coupon === "✔") {
+            setCoupon("❔")
+            setDeductTotal(1)
+        }
+
+
     }
-    console.log('redirect BEFORE RETURN: ', redirect);
+    // console.log('redirect BEFORE RETURN: ', redirect);
     return (
         <>
-        {redirect?<><Redirect to='/paymentMethod'/></>:<>
-        <PageContainer>
+            {redirect ? <><Redirect to='/paymentMethod' /></> : <>
+                <PageContainer>
 
-            <Container>
-                <div style={{ gridArea: "1 / 1 / 2 / 4" }}>
-                    <GreyP>Products</GreyP>
-                </div>
-                <div style={{ gridArea: "1 / 4 / 2 / 5" }}>
-                    <GreyP>Price</GreyP>
-                </div>
-                <div style={{ gridArea: "1 / 5 / 2 / 6" }}>
-                    <GreyP>Quantity</GreyP>
-                </div>
-                <div style={{ gridArea: "1 / 6 / 2 / 7" }}>
-                    <GreyP>Subtotal</GreyP>
-                </div>
-            </Container>
-            <CartTitle>Cart</CartTitle>
-            <Bordered>
+                    <Container>
+                        <div style={{ gridArea: "1 / 1 / 2 / 4" }}>
+                            <GreyP>Products</GreyP>
+                        </div>
+                        <div style={{ gridArea: "1 / 4 / 2 / 5" }}>
+                            <GreyP>Price</GreyP>
+                        </div>
+                        <div style={{ gridArea: "1 / 5 / 2 / 6" }}>
+                            <GreyP>Quantity</GreyP>
+                        </div>
+                        <div style={{ gridArea: "1 / 6 / 2 / 7" }}>
+                            <GreyP>Subtotal</GreyP>
+                        </div>
+                    </Container>
+                    <CartTitle>Cart</CartTitle>
+                    <Bordered>
 
-                {state.map((item) => <CartItem key={item.id} {...item} />)}
-            </Bordered>
+                        {state.map((item) => <CartItem key={item.id} {...item} />)}
+                    </Bordered>
+                    <Total>
+                        <form style={{ gridArea: "1 / 1 / 2 / 3" }}>
+                            <CouponContainer>
+                                <StyledInput name="coupon" type="text" placeholder="Coupon code?" value={couponValue}
+                                    onChange={(e) => setCouponValue(e.target.value)}
+                                />
+                                <StyledInputButton onClick={handleCoupon}>{coupon}</StyledInputButton>
+                            </CouponContainer>
+                            {/* <GreyP>You saved !</GreyP> handle to insert when checked */}
+                        </form>
+                        <div style={{ gridArea: "1 / 3 / 2 / 5", margin: "20px" }}>
+                            <GreyP>Shipping:</GreyP>
+                            <p style={{ margin: "0 20px" }}>${handleShipping()}</p>
+                        </div>
+                        <div style={{ gridArea: "1 / 5 / 2 / 7", margin: "20px" }}>
+                            <GreyP>Total Calculated:</GreyP>
+                            <p style={{ margin: "0 20px" }}>${handleTotal()}</p>
+                            {coupon === "✔" && userLoggedIn.status === "authenticated"
+                                ? <p style={{ padding: '10px', borderRadius: '25px', background: '#FF4F40', margin: "0 20px" }}>10% deducted !</p>
+                                : coupon === "❌" && <p style={{ padding: '10px', borderRadius: '25px', background: '#FF4F40', margin: "0 20px" }}>No coupon applied!</p>
+                            }
+                        </div>
+                        <div style={{ gridArea: "2 / 3 / 3 / 5" }}>
+                            <StyledButton onClick={() => dispatch(clearCart())}>Clear Cart</StyledButton>
+                        </div>
+                        <div style={{ gridArea: "2 / 5 / 3 / 7" }}>
+                            <StyledButton onClick={handleInventory}>Make purchase</StyledButton>
+                        </div>
 
+                    </Total>
+                    <div style={{ display: 'flex', justifyContent: 'start', fontSize: '1.1rem' }}>
+                        {purchaseBool && <form onSubmit={() => setPurchaseBool(false)}>
+                            <div>You need to sign up or login to make a purchase!</div>
+                            <Btn type='submit'>Cancel</Btn>
+                        </form>}
+                        {/* {couponState && <form onSubmit={() => setCouponState(false)}>
+                            <div>See your Mail for your coupon code!</div>
+                            <Btn type='submit'>Accept</Btn>
+                        </form>} */}
+                    </div>
 
-            <Total>
-                <form style={{ gridArea: "1 / 1 / 2 / 3" }}>
-                    <CouponContainer>
-                        <StyledInput name="coupon" type="text" placeholder="Coupon code?" />
-                        <StyledInputButton onClick={handleCoupon}>{coupon}</StyledInputButton>
-                    </CouponContainer>
-                    {/* <GreyP>You saved !</GreyP> handle to insert when checked */}
-                </form>
-                <div style={{ gridArea: "1 / 3 / 2 / 5", margin: "20px" }}>
-                    <GreyP>Shipping:</GreyP>
-                    <p style={{ margin: "0 20px" }}>${handleShipping()}</p>
-                </div>
-                <div style={{ gridArea: "1 / 5 / 2 / 7", margin: "20px" }}>
-                    <GreyP>Total Calculated:</GreyP>
-                    <p style={{ margin: "0 20px" }}>${handleTotal()}</p>
-                </div>
-                <div style={{ gridArea: "2 / 3 / 3 / 5" }}>
-                    <StyledButton onClick={() => dispatch(clearCart())}>Clear Cart</StyledButton>
-                </div>
-                <div style={{ gridArea: "2 / 5 / 3 / 7" }}>
-                    <StyledButton onClick={handleInventory}>Make purchase</StyledButton>
-                </div>
-            </Total>
-
-        </PageContainer></>
-        }
+                </PageContainer></>
+            }
         </>
     )
 };
@@ -252,6 +313,25 @@ const StyledButton = styled.div`
         cursor: pointer;
     }
 `;
+
+const Btn = styled.button`
+    margin: 20px;
+    border-radius: 4px;
+    background: #164C81;
+    width: 200px; 
+    color: white; 
+    text-transform: uppercase; 
+    height: 20px; 
+    font-size: 15px; 
+    font-weight: 600;
+    text-align: center;
+    align-content: center;
+
+    :hover {
+        cursor: pointer;
+    }
+
+`
 
 export default Cart;
 

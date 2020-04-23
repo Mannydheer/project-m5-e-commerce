@@ -44,9 +44,8 @@ const ItemGrid = () => {
         }
         else {
             //mostly for when your typing
-            setPageCounter(1)
-            //change for modal
-            window.alert(pageCount + 'This page does not exist.')
+            setPageCounter(39)
+
         }
     }, [pageCount, sortState]);
     //function that will handle page directing. 

@@ -32,6 +32,7 @@ import BodyPart from '../Bodypart/BodyPart';
 import Home from '../Home';
 import Footer from '../Footer';
 import Error from '../Error/Error'
+import MailBox from '../Mailbox'
 
 
 function App() {
@@ -135,6 +136,9 @@ function App() {
           </Route>
           <Route exact path="/paymentMethod" >
             <PaymentMethod />
+          </Route>
+          <Route exact path='/mailbox'>
+            <MailBox></MailBox>
           </Route>
           <Route path="*" component={Error} />
 
