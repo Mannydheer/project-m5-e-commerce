@@ -8,6 +8,8 @@ const dbName = 'Ecommerce';
 const collection = 'Items'
 const collection2 = 'Companies'
 const collectionUsers = 'Users'
+const collectionCoupons = 'Coupons'
+
 const assert = require('assert')
 
 
@@ -503,7 +505,6 @@ const handleLogin = (req, res) => {
                     if (checkForUser.user === loginInfo.user && checkForUser.pass === loginInfo.pass) {
                         let name = checkForUser.user.split('@')[0]
                         let data = checkForUser.cart; //if its empty, it is fine as it wont effect the front end.
-                        console.log(data, 'this is data')
                         res.status(200).send({ name, data })
                     }
                     else {
@@ -688,12 +689,20 @@ const handleGetEmails = async (req, res) => {
             const db = client.db(dbName)
             //comapnies collection
             let checkForUser = await db.collection(collectionUsers).findOne({ name: name })
+            //if user doesnt exist, stop right away.
+            let getCoupons = await db.collection(collectionCoupons).find({ applied: false }).limit(5).toArray()
 
-            if (!checkForUser) {
-                res.status(404).json({ message: 'That user does not exist.' })
-            } else {
-                res.status(200).json({ CouponCode: checkForUser.CouponCode, message: 'Coupon successfuly retrieved' })
-            }
+
+            Promise.all([checkForUser, getCoupons])
+                .then(() => {
+                    if (!checkForUser) {
+                        res.status(404).json({ message: 'That user does not exist.' })
+                    } else if (!getCoupons) {
+                        res.status(401).json({ CouponCode: getCoupons, message: 'No coupons available.' })
+                    } else {
+                        res.status(200).json({ CouponCode: getCoupons, message: 'Successful coupons.' })
+                    }
+                })
 
         }
         catch (error) {
@@ -710,9 +719,50 @@ const handleGetEmails = async (req, res) => {
 }
 
 
+
+const handleUpdateCoupon = (req, res) => {
+
+    let code = req.params; //array of objects
+
+    console.log(code, 'CODE INSIDE COUPON')
+
+
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    //connect to db
+    client.connect(async (err) => {
+        if (err) throw { Error: err, message: "error occured connected to DB" }
+        console.log("Connected to DB in handleCartItemsForUser")
+        try {
+
+            const db = client.db(dbName)
+            //comapnies collection
+            let r = await db.collection(collectionCoupons).updateOne({ code: parseInt(code.code) }, { $set: { applied: true } })
+            assert(1, r.modifiedCount)
+            assert(1, r.matchedCount)
+            res.status(200).json({ success: true, message: "Coupon has been used." })
+        }
+        catch (error) {
+            console.log(error.stack, 'Catch Error in handleUpdateCoupon')
+            res.status(500).json({ status: 500, message: error.message })
+        }
+        finally {
+            console.log('disconnected')
+            client.close();
+        }
+    })
+
+};
+
+
+
+
+
 module.exports = {
     handleSignUp, handleBodyItems, handleRelatedItems,
     handleAllData, handleCompany, handleItemId, handleCategory,
     handleItemsData, handleSellers, handleLogin, handleCartItemsForUser, handleUpdateStock, handleSearch,
-    handleGetEmails
+    handleGetEmails, handleUpdateCoupon
 };

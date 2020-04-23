@@ -8,7 +8,8 @@ const items = require('./data/items.json');
 const { handleItemId, handleItemsData,
   handleCategory, handleCompany, handleSellers,
   handleAllData, handleRelatedItems, handleBodyItems,
-  handleSignUp, handleLogin, handleCartItemsForUser, handleUpdateStock, handleSearch, handleGetEmails
+  handleSignUp, handleLogin, handleCartItemsForUser, handleUpdateStock, handleSearch, handleGetEmails,
+  handleUpdateCoupon
 } = require('./handlers');
 
 
@@ -78,6 +79,8 @@ app.get('/bodypart/:body', handleBodyItems)
 //
 app.post('/updateStock', handleUpdateStock)
 //
+app.get('/updateCoupon/:code', handleUpdateCoupon)
+
 app.get('/getEmails/:name', handleGetEmails)
 
 
