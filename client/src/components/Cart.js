@@ -38,18 +38,18 @@ const Cart = () => {
     const purchaseBag = useSelector(state => getItemsAndQuantities(state.cartState));
 
     //coupon code control
-    let location = useLocation().search.replace('?', '')
+    let location = useLocation().search.replace('?', '').replace('?', ' ').split(' ')
+    let apply = location[0]
+    let code = parseInt(location[1])
+    console.log(location)
 
     useEffect(() => {
         //only if logged in. 
-        if (userLoggedIn.status === "authenticated" && location === 'apply' && cartState.cartCounter !== 0) {
-            setCouponValue(userLoggedIn.coupon)
+        if (userLoggedIn.status === "authenticated" && apply === 'apply' && cartState.cartCounter !== 0) {
+            setCouponValue(code)
         }
         //if logged in but didnt go see mail couponds
-        else if (userLoggedIn.status === "authenticated" && location !== 'apply') {
-            setCouponValue('')
-        }
-    }, [location, userLoggedIn])
+    }, [])
 
 
 
@@ -76,7 +76,15 @@ const Cart = () => {
                 //snakcbar item deleted - item added. !!!
                 let received = await response.json();
                 console.log(received, 'STOCK LEVELS UPDATED')
-                dispatch(updateCartStateBackend(received.updatedCartState))
+
+
+                let updateCoupon = await fetch(`/updateCoupon/${couponValue}`)
+                let couponResponse = await updateCoupon.json();
+
+                Promise.all([received, couponResponse])
+                    .then(() => {
+                        dispatch(updateCartStateBackend(received.updatedCartState))
+                    })
 
                 // dispatch(updateCartStateBackend)
             }
@@ -89,13 +97,12 @@ const Cart = () => {
 
     const handleTotal = () => {
 
-        console.log(deductTotal, 'INSINDE HANDLE TOTLA')
         if (cartState.cartCounter === 0) {
             return
         } else {
 
-            console.log(couponValue, userLoggedIn.coupon)
-            if (userLoggedIn.status === "authenticated" && couponValue === userLoggedIn.coupon || parseInt(couponValue) === userLoggedIn.coupon) {
+            if (userLoggedIn.status === "authenticated" && userLoggedIn.coupon) {
+                console.log('inside handletotal deduct')
                 return (
                     (Math.round((total + shipping) * 100) / 100) * deductTotal
                 );
@@ -115,19 +122,31 @@ const Cart = () => {
             return shipping;
         }
     }
-
     const handleCoupon = (event) => {
         event.preventDefault();
 
-        console.log(couponValue, userLoggedIn.coupon)
-        if (couponValue === userLoggedIn.coupon || parseInt(couponValue) === userLoggedIn.coupon) {
-            setDeductTotal(0.90)
-            setCoupon("✔")
-        }     //inner text changes to ❌ or ✔ depending on if coupon is good
-        else {
-            setCoupon("❌")
-        }
 
+        if (userLoggedIn.status === "authenticated" && userLoggedIn.coupon !== undefined) {
+            let discount = userLoggedIn.coupon.find(element => {
+
+                if (parseInt(element.code) === couponValue || parseInt(element.code) === parseInt(couponValue)) {
+                    console.log('inSIDE FIND')
+                    return element;
+                }
+            });
+            if (discount === undefined) {
+                setDeductTotal(1)
+                setCoupon("❌")
+
+            }
+            else {
+                setDeductTotal(1 - discount.discount)
+                setCoupon("✔")
+            }
+        }     //inner text changes to ❌ or ✔ depending on if coupon is good
+        // else {
+        //     setCoupon("❌")
+        // }
         if (coupon === "❌") {
             setCoupon("❔")
             setCouponValue('')
@@ -139,6 +158,7 @@ const Cart = () => {
 
 
     }
+    console.log(typeof couponValue)
     // console.log('redirect BEFORE RETURN: ', redirect);
     return (
         <>
@@ -167,6 +187,7 @@ const Cart = () => {
                     <Total>
                         <form style={{ gridArea: "1 / 1 / 2 / 3" }}>
                             <CouponContainer>
+
                                 <StyledInput name="coupon" type="text" placeholder="Coupon code?" value={couponValue}
                                     onChange={(e) => setCouponValue(e.target.value)}
                                 />
@@ -181,8 +202,8 @@ const Cart = () => {
                         <div style={{ gridArea: "1 / 5 / 2 / 7", margin: "20px" }}>
                             <GreyP>Total Calculated:</GreyP>
                             <p style={{ margin: "0 20px" }}>${handleTotal()}</p>
-                            {coupon === "✔" && userLoggedIn.status === "authenticated"
-                                ? <p style={{ padding: '10px', borderRadius: '25px', background: '#FF4F40', margin: "0 20px" }}>10% deducted !</p>
+                            {coupon === "✔" && userLoggedIn.status === "authenticated" && userLoggedIn.coupon
+                                ? <p style={{ padding: '10px', borderRadius: '25px', background: '#FF4F40', margin: "0 20px" }}>{`${Math.round((1 - deductTotal) * 100)}% deducted`}</p>
                                 : coupon === "❌" && <p style={{ padding: '10px', borderRadius: '25px', background: '#FF4F40', margin: "0 20px" }}>No coupon applied!</p>
                             }
                         </div>
