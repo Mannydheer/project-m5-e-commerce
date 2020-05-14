@@ -2,14 +2,13 @@
 
 //MONGODB
 const MongoClient = require('mongodb').MongoClient;
-const uri = `mongodb+srv://mannyDb:nbjlHmpzLMbDb9zx@cluster0-ucphp.mongodb.net/test?retryWrites=true&w=majority`;
+const uri = "mongodb+srv://mannyDb:ZxkArtTdmzOWvHvr@cluster0-ucphp.mongodb.net/test?retryWrites=true&w=majority"
 
 const dbName = 'Ecommerce';
 const collection = 'Items'
 const collection2 = 'Companies'
 const collectionUsers = 'Users'
 const collectionCoupons = 'Coupons'
-
 const assert = require('assert')
 
 

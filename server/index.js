@@ -14,7 +14,7 @@ const { handleItemId, handleItemsData,
 
 
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 /*items.forEach((element, index) => {
 

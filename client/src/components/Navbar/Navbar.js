@@ -86,10 +86,7 @@ const Navbar = ({ setLoginState, loginState }) => {
     }
 
     const handleClick = () => {
-
     }
-
-
     const handleKeypress = (e) => {
         if (e.keyCode === 27) {
             setTriggerSearchBar(false)
@@ -288,6 +285,7 @@ const LoginContainerMobile = styled.div`
 
 const StyledUserIcon = styled(FaRegUser)`
     margin-right: 1.3rem; 
+  
 `
 
 
