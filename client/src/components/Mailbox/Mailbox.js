@@ -20,7 +20,6 @@ const MailBox = () => {
                     return res.json()
                 })
                 .then(data => {
-                    console.log(data)
                     dispatch(getCouponCode(data.CouponCode))
                 })
         }
@@ -30,9 +29,9 @@ const MailBox = () => {
         {userLoggedIn.status === "authenticated" && userLoggedIn.coupon ? <Wrapper>
             <div>
                 <Coupon>Coupon Codes</Coupon>
-                {userLoggedIn.coupon.map(coupon => {
+                {userLoggedIn.coupon.map((coupon, index) => {
                     return (
-                        <Code>
+                        <Code key={`${coupon.code}+${index}`}>
                             {coupon.code}
                             <div>{coupon.discount}%</div>
                             <Btn to={`/cart?apply?${coupon.code}`}>Apply</Btn>

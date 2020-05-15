@@ -71,12 +71,10 @@ const ItemGrid = () => {
                             <GridWrapper>
                                 {currentItems.items.map((item, arrayNum) => {
                                     return (
-                                        <StyledLink key={item.id} to={`/item/${item._id}`}>
+                                        <StyledLink key={`${item.id}+${arrayNum}`} to={`/item/${item._id}`}>
                                             {/*SEE INSIDE RENDER ITEM FOR DISPATCH TO ADD TO CART - MANNY */}
 
-                                            <RenderItem key={item.id} item={item}>
-
-                                            </RenderItem>
+                                            <RenderItem item={item} />
                                             {item.numInStock == 0 && <StyledStock> Out Of <br></br> Stock</StyledStock>}
 
                                         </StyledLink>

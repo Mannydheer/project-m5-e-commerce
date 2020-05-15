@@ -43,9 +43,9 @@ const FeaturedProducts = () => {
                     <FaCaretLeft />
                 </StyledScrollLeft>
                 <Wrapper ref={scrollRef} style={{ scrollBehavior: "smooth" }}>
-                    {featuredItemsArray.length != 0 && featuredItemsArray.map(item => {
+                    {featuredItemsArray.length != 0 && featuredItemsArray.map((item, index) => {
                         return (
-                            <StyledLink key={item.name} to={`item/${item._id}`}>
+                            <StyledLink key={`${item.imageSrc}+${item.companyId}+${index}`} to={`item/${item._id}`}>
                                 <RenderItem item={item}></RenderItem>
                                 {item.numInStock == 0 && <StyledStock> Out Of <br></br> Stock</StyledStock>}
                             </StyledLink>

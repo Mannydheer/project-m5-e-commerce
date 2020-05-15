@@ -61,9 +61,9 @@ const Sellers = () => {
                 </Header>
                 {/* all items */}
                 <GridWrapper>
-                    {companyState[1].map(item => {
+                    {companyState[1].map((item, index) => {
                         return (
-                            <StyledLink to={`/item/${item._id}`}>
+                            <StyledLink key={`${item.name}+${index}`} to={`/item/${item._id}`}>
                                 {item.numInStock == 0 && <StyledStock> Out Of <br></br> Stock</StyledStock>}
                                 <RenderItem item={item}></RenderItem>
                             </StyledLink>

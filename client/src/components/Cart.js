@@ -175,7 +175,7 @@ const Cart = () => {
                     <CartTitle>Cart</CartTitle>
                     <Bordered>
 
-                        {state.map((item) => <CartItem key={item.id} {...item} />)}
+                        {state.map((item, index) => <CartItem key={`eachItem${item.id}+${index}`} {...item} />)}
                     </Bordered>
                     <Total>
                         <form style={{ gridArea: "1 / 1 / 2 / 3" }}>

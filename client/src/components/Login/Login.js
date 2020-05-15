@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 // import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -85,7 +84,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
 
     const handleDone = (e) => {
         e.preventDefault();
-        console.log(userInfo, 'OUTSIDE ASYNC')
 
         const handleLogin = async () => {
             //requestUserInfo - change status to loading
@@ -216,13 +214,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
                         >
                             Cancel
                         </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Button variant="body2">
-                                    Don't have an account? <Signup setLoginState={setLoginState}></Signup>
-                                </Button>
-                            </Grid>
-                        </Grid>
                     </form>
                 </div>
                 <Box mt={8}>

@@ -44,53 +44,21 @@ const Sidebar = () => {
     let selectOptions = [];
 
     if (allCompanies != null) {
-        console.log(allCompanies)
         sortedCompanies = allCompanies.sort((a, b) => ((a.name < b.name) ? -1 : 0));
 
         sortedCompanies.forEach(company => {
             selectOptions.push({ value: company.name, label: company.name })
         })
-        console.log(selectOptions)
     }
-
-
-
 
 
 
     return (
         <SidebarContainer>
 
-
-            {/* {allDataFetchSuccess === 'success' && <Search></Search>} */}
-
-            {/* <PriceSortContainer>
-                <SidebarHeading>Filter By Price</SidebarHeading>
-                <SidebarBody>$ 0-100</SidebarBody>
-                <SidebarBody>$ 101-500</SidebarBody>
-                <SidebarBody>$ 501-1000</SidebarBody>
-
-            </PriceSortContainer> */}
             <CategoriesContainer>
                 <SidebarHeading>Filter by Company</SidebarHeading>
-
-                {/* <StyledSelect defaultValue="All" onChange={handleSelect}>
-                    <option disabled="disabled" >All</option>
-                    {sortedCompanies != null ? sortedCompanies.map((company) => (
-                        <>
-                            <option key={company.name} value={company.name}>{company.name}</option>
-                        </>
-                    )
-                    )
-                        :
-                        <option value="" disabled="disabled" >LOADING</option>
-                    }
-                </StyledSelect> */}
-
                 {selectOptions.length != 0 && <Select placeholder="All" onChange={handleSelect} options={selectOptions} />}
-
-
-
             </CategoriesContainer>
             <CategoriesContainer>
                 <SidebarHeading>PRODUCT CATEGORIES</SidebarHeading>
