@@ -153,7 +153,6 @@ const handleBodyItems = (req, res) => {
                 .find({ body_location: bodypart })
                 .toArray()
                 .then(filteredBodyItems => {
-                    console.log(filteredBodyItems)
                     res.status(200).send(filteredBodyItems);
                 })
         }
@@ -612,7 +611,6 @@ const handleSearch = (req, res) => {
                             let allFound = true;
                             splitSearch.forEach(searchTerm => {
                                 allFound = (item.name.toLowerCase().includes(searchTerm.toLowerCase())) ? allFound : false
-                                console.log("CONDITION: ", (item.name.toLowerCase().includes(searchTerm.toLowerCase)), "SEARCHTERM: ", searchTerm, "ITEM: ", item.name)
                             })
                             return allFound;
                         })
@@ -713,9 +711,6 @@ const handleGetEmails = async (req, res) => {
 const handleUpdateCoupon = (req, res) => {
 
     let code = req.params; //array of objects
-
-    console.log(code, 'CODE INSIDE COUPON')
-
 
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
