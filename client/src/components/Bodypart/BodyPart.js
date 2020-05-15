@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom"
 import { GridWrapper, StyledStock, MiddlePage, PageContainer } from '../CONSTANTS';
 import RenderItem from '../ItemGrid/RenderItem';
 import { Link } from "react-router-dom";
-import { css } from "@emotion/core";
 import ClipLoader from "react-spinners/ClipLoader";
 import styled from 'styled-components';
 
@@ -15,7 +14,6 @@ const BodyPart = () => {
 
     //will grab from URL
     const { body } = useParams();
-    console.log(body)
 
 
     useEffect(() => {
@@ -42,7 +40,6 @@ const BodyPart = () => {
 
     }, [body])
 
-    console.log(bodyItemInfo)
 
     return (
         <PageContainer>

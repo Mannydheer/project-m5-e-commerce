@@ -14,7 +14,6 @@ const RenderItem = ({ item }) => {
     const handleButtonClick = (item, e) => {
         e.preventDefault();
         dispatch(addItem(item))
-        console.log(e);
 
     }
 

@@ -83,7 +83,6 @@ const handleItemId = async (req, res) => {
 const handleItemsData = (req, res) => {
 
     let sort = req.query.sort
-    console.log(sort)
     let page = req.query.page; //1
     let limit = req.query.limit; //9
 
@@ -367,7 +366,6 @@ const handleUpdateStock = async (req, res) => {
         client.connect(async (err) => {
             if (err) throw { Error: err, message: "error occured connected to DB" }
             console.log("Connected to DB in handleUpdateStock")
-            console.log(slicedIds, 'HERE')
             try {
                 const db = client.db(dbName)
                 slicedIds.forEach(async (id) => {
@@ -381,7 +379,6 @@ const handleUpdateStock = async (req, res) => {
                         }
                         if (item.numInStock - cartInfo[id].quantity >= 0) {
 
-                            console.log(cartInfo[id].quantity)
                             let r = await db.collection(collection)
                                 .updateOne({ _id: parseInt(id) }, { $inc: { "numInStock": -cartInfo[id].quantity } })
                             assert(1, r.matchedCount)
@@ -608,7 +605,6 @@ const handleSearch = (req, res) => {
                     if (search.includes(" ")) {
                         splitSearch = search.split(" ")
 
-                        console.log("here is split search", splitSearch)
 
                         // for each item
                         let searchArray = items.filter(item => {
@@ -621,7 +617,6 @@ const handleSearch = (req, res) => {
                             return allFound;
                         })
 
-                        console.log(" here is the search Array", searchArray)
                         searchedItems = searchArray
 
                     } else {
@@ -632,19 +627,16 @@ const handleSearch = (req, res) => {
                         })
                     }
                     if (sort === 'lowToHigh') {
-                        console.log('low to high')
                         sortItems = searchedItems.slice().sort(function (a, b) {
 
                             return parseInt(a.price.replace('$', '').replace(',', '')) - parseInt(b.price.replace('$', '').replace(',', ''))
                         });
                     }
                     else if (sort === 'highToLow') {
-                        console.log('high to low')
                         sortItems = searchedItems.slice().sort(function (a, b) {
                             return parseInt(b.price.replace('$', '').replace(',', '')) - parseInt(a.price.replace('$', '').replace(',', ''))
                         })
                     } else if (sort === 'bestMatch') {
-                        console.log("best match last else if", items[0].price)
                         sortItems = searchedItems;
                     }
 
@@ -673,7 +665,6 @@ const handleGetEmails = async (req, res) => {
 
     const { name } = req.params;
 
-    console.log(name, ' THIS IS THE NAME PF USER')
 
 
     const client = new MongoClient(uri, {

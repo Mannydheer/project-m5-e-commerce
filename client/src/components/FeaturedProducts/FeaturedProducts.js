@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import RenderItem from '../ItemGrid/RenderItem';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { PageHeadings, StyledStock } from "../CONSTANTS"
 import { FaCaretLeft, FaCaretRight } from 'react-icons/fa'
 
@@ -24,9 +24,6 @@ const FeaturedProducts = () => {
         }
     }
 
-    // if (featuredItemsArray.length != 0) {
-    //     console.log(featuredItemsArray)
-    // }
     const scrollLeft = (ref) => {
         scrollRef.current.scrollBy(-300, 0)
     }

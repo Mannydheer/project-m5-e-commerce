@@ -15,7 +15,6 @@ const ReusableGrid = ({ itemSource, exportPage, exportSort }) => {
 
 
     const test = (val) => {
-        console.log("testing exportFilter", val)
         setSortState(val.key)
 
     }
@@ -35,7 +34,6 @@ const ReusableGrid = ({ itemSource, exportPage, exportSort }) => {
 
         setPageCounter(page)
         exportPage(page)
-        console.log("handleFilterSelect fired in SortDropdown", page)
     }
 
     if (itemSource === null) {
@@ -46,7 +44,6 @@ const ReusableGrid = ({ itemSource, exportPage, exportSort }) => {
 
 
     const good = (val) => {
-        console.log("testing exportFilter", val)
         setSortState(val.key)
         exportSort(val)
 

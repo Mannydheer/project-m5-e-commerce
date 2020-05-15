@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useParams, Link } from "react-router-dom"
-import { updateQuantity, removeItem } from "../../actions";
 import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../actions';
-// import { itemsReducer } from '../../reducers/items-reducer';
 import { isInCartSelector } from '../../reducers/cart-reducer';
 import { PageContainer, MiddlePage, PageHeadings, StyledButton } from '../CONSTANTS';
 import RelatedItems from './RelatedItems';
 import ClipLoader from "react-spinners/ClipLoader";
-import { GoPlus } from 'react-icons/go';
 import { FiShoppingCart } from 'react-icons/fi';
 
 
@@ -25,7 +22,6 @@ const Item = (props) => {
 
     const { id } = useParams();
 
-    console.log(id, 'THIS IS ID')
 
     const handleQuantity = (event) => {
         const value = event.target.value;
@@ -33,7 +29,6 @@ const Item = (props) => {
             return
         } else {
             setQuantity(parseInt(value));
-            console.log('quantity: ', quantity);
         }
     };
 
@@ -67,8 +62,6 @@ const Item = (props) => {
     return (
         <React.Fragment>
             <PageContainer>
-
-
 
                 {itemInfo !== null ?
                     <FlexContainer>

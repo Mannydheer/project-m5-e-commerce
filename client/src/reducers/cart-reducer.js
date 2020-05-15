@@ -50,7 +50,6 @@ export default function cartReducer(state = initialState, action) {
     }
 
     case "BACKEND_CART_STATE_WITH_UPDATED_STOCK": {
-      console.log(action.data, 'NEW DATA FROM BACKEND')
       return {
         ...action.data
       }

@@ -4,7 +4,7 @@ import RenderItem from '../ItemGrid/RenderItem';
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, requestItemData, receivedItemData, receivedItemDataError } from '../../actions';
+import { requestItemData, receivedItemData, receivedItemDataError } from '../../actions';
 import Sidebar from '../Sidebar';
 import { SideAndGrid, GridContainer, GridWrapper, PageContainer, StyledStock } from '../CONSTANTS'
 
@@ -54,12 +54,6 @@ const Category = () => {
         //try to reuse ItemGrid component?
     }, [category, pageCount])
     // <<<<<<< searchBar-2-manny
-
-    if (currentItems.items != null) {
-        console.log(currentItems.items.length)
-
-    }
-
     return (
         <React.Fragment>
 
@@ -72,9 +66,6 @@ const Category = () => {
                         <h1>{category}</h1>
 
                     </StyledHeaderImg>
-
-
-
                     <SideAndGrid>
                         <Sidebar />
                         <GridContainer>

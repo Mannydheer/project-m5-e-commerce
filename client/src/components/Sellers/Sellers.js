@@ -39,11 +39,6 @@ const Sellers = () => {
 
     }, [companyState])
 
-    console.log(pathName);
-    console.log(companyState)
-
-
-
 
     return (<PageContainer>
 

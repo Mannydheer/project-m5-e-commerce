@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from 'styled-components';
 import { updateQuantity, removeItem } from "../actions";
 import { useDispatch } from "react-redux";
-import { AddToCart } from './CartFunctions';
-import { StyledStock } from './CONSTANTS';
 
 
 const CartItem = (props) => {
@@ -14,7 +12,6 @@ const CartItem = (props) => {
   const handleQuantity = (event) => {
     let value = event.target.value;
 
-    console.log(typeof value, 'THIS IS THE TYPE OF')
 
     if (parseInt(value) > props.numInStock) {
       return

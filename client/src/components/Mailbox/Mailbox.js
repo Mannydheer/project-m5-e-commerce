@@ -1,29 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCouponCode } from '../../actions';
 import styled from 'styled-components';
-import { StyledStock, MiddlePage } from '../CONSTANTS';
+import { MiddlePage } from '../CONSTANTS';
 import ClipLoader from "react-spinners/ClipLoader";
-import { Link, useLocation } from "react-router-dom";
-
-
-
-
-
-
-
+import { Link } from "react-router-dom";
 
 const MailBox = () => {
 
     const userLoggedIn = useSelector(state => state.userReducer)
 
     const dispatch = useDispatch();
-
-
-
-
-
-
 
     useEffect(() => {
 
@@ -38,11 +25,6 @@ const MailBox = () => {
                 })
         }
     }, [])
-
-
-
-
-
 
     return <>
         {userLoggedIn.status === "authenticated" && userLoggedIn.coupon ? <Wrapper>

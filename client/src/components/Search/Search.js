@@ -12,15 +12,9 @@ const Search = ({ triggerSearchBar, setScroll, scroll }) => {
     const [query, setQuery] = useState(null)
     const [type, setTyped] = useState(' ')
     const [results, setResults] = useState(null)
-    const [categoryData, setCategoryData] = useState(null)
     //will grab the url of the category. 
     let location = useLocation().pathname.split('/')
     let history = useHistory();
-    console.log(location.length)
-
-
-
-
     //need to search based on category. 
     useEffect(() => {
 
@@ -50,9 +44,7 @@ const Search = ({ triggerSearchBar, setScroll, scroll }) => {
                 }
             })
             setResults(matchedResults)
-
         }
-
     }, [type])
 
     const handlePushItem = (id) => {
@@ -65,15 +57,12 @@ const Search = ({ triggerSearchBar, setScroll, scroll }) => {
     return (
         <>
             <StyledForm action={`/searching/${type}`}>
-
                 <SearchFlex>
-
                     <SearchInput value={type}
                         onChange={(e) => {
                             setScroll(true);
                             setTyped(e.target.value);
                         }
-
                         }
                         placeholder="Search our products..." style={(triggerSearchBar) ?
                             {
@@ -189,22 +178,8 @@ const StyledForm = styled.div`
         z-index: 100; 
     }
 `
-
-const StyledInput = styled.input`
- width: 100%; 
- height: 45px; 
- font-size: .9rem;
- border: none; 
- background: #EEEEEE; 
- padding: 0 5px; 
-
-`
-
-
-
 const Strong = styled.strong`
 font-weight: bolder;
-
 `
 const SearchInput = styled.input`
     position: absolute; 
@@ -234,7 +209,3 @@ const SearchFlex = styled.div`
 `
 
 
-const Ul = styled.div`
-position: absolute;
-height: 30%;
-`

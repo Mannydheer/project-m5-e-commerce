@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import ChatBot from 'react-simple-chatbot';
 import { useHistory } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
-import styled from 'styled-components';
 import Signup from '../Signup/Signup';
 import Login from '../Login/Login';
 
-const Chatbot = ({ loginState, setLoginState }) => {
+const Chatbot = ({ setLoginState }) => {
 
     const [chatLoginColor, setChatLoginColor] = useState(true)
     let history = useHistory();
@@ -24,8 +23,6 @@ const Chatbot = ({ loginState, setLoginState }) => {
         botFontColor: 'white',
         userBubbleColor: 'white'
     }
-
-
 
     const config = {
         width: "300px",

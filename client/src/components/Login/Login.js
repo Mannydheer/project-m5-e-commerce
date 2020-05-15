@@ -90,7 +90,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
         const handleLogin = async () => {
             //requestUserInfo - change status to loading
             dispatch(requestUserInfo())
-            console.log(userInfo, 'inside login')
             try {
 
                 let response = await fetch('/Login', {
@@ -103,7 +102,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
                 })
                 //authenticated
                 if (response.status === 200) {
-                    console.log("Success")
                     let userCredentials = await response.json()
                     dispatch(LoginCart(userCredentials.data))
                     dispatch(receiveUserInfo(userCredentials))
@@ -112,9 +110,7 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
                     setLoginState(false)
                 }
                 else if (response.status === 404) {
-                    console.log("User Not Found!")
                     //reset on CHange
-
                     setUserInfo({
                         ...userInfo,
                         user: '',
@@ -131,7 +127,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
                         user: '',
                         pass: ''
                     })
-                    console.log('Some error occured login')
                     dispatch(receiveUserInfoError())
                 }
 
@@ -139,7 +134,7 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
             catch (err) {
                 console.log(err, 'CATCH ERROR')
             }
-            
+
 
         }
         handleLogin();

@@ -12,7 +12,6 @@ import ReusableGrid from '../ReusableGrid/index';
 const SearchPage = () => {
     const [searched, setSearched] = useState(null)
     let query = window.location.pathname.replace("/searching/", '')
-    console.log("here is the query", query)
     const [sortState, setSortState] = useState('bestMatch')
     const [page, setPage] = useState(1)
 
@@ -29,7 +28,6 @@ const SearchPage = () => {
         //.catch(() => window.alert('Your search returned no results.'))
     }, [query, sortState, id])
 
-    console.log(searched)
     if (searched === null) {
         return (
             <div>loading</div>
@@ -37,12 +35,10 @@ const SearchPage = () => {
     }
 
     const test = (val) => {
-        console.log("testing exportState Here", val.key)
         setSortState(val.key)
     }
 
     return (
-
         <ReusableGrid exportPage={(page) => setPage(page)}
             itemSource={searched} exportSort={(val) => test(val)} />
     )

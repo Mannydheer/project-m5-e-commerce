@@ -41,7 +41,6 @@ const Cart = () => {
     let location = useLocation().search.replace('?', '').replace('?', ' ').split(' ')
     let apply = location[0]
     let code = parseInt(location[1])
-    console.log(location)
 
     useEffect(() => {
         //only if logged in. 
@@ -60,7 +59,6 @@ const Cart = () => {
 
 
         if (userLoggedIn.status === "authenticated") {
-            console.log('INSIDE')
             setRedirect(true);
             // on Click of MakePurchsase, will post to back end and ipdate stock levels
             const handleUpdateStock = async () => {
@@ -75,7 +73,6 @@ const Cart = () => {
                 //to ensure
                 //snakcbar item deleted - item added. !!!
                 let received = await response.json();
-                console.log(received, 'STOCK LEVELS UPDATED')
 
 
                 let updateCoupon = await fetch(`/updateCoupon/${couponValue}`)
@@ -102,7 +99,6 @@ const Cart = () => {
         } else {
 
             if (userLoggedIn.status === "authenticated" && userLoggedIn.coupon) {
-                console.log('inside handletotal deduct')
                 return (
                     (Math.round((total + shipping) * 100) / 100) * deductTotal
                 );
@@ -130,7 +126,6 @@ const Cart = () => {
             let discount = userLoggedIn.coupon.find(element => {
 
                 if (parseInt(element.code) === couponValue || parseInt(element.code) === parseInt(couponValue)) {
-                    console.log('inSIDE FIND')
                     return element;
                 }
             });
@@ -158,8 +153,6 @@ const Cart = () => {
 
 
     }
-    console.log(typeof couponValue)
-    // console.log('redirect BEFORE RETURN: ', redirect);
     return (
         <>
             {redirect ? <><Redirect to='/paymentMethod' /></> : <>
@@ -220,10 +213,7 @@ const Cart = () => {
                             <div>You need to sign up or login to make a purchase!</div>
                             <Btn type='submit'>Cancel</Btn>
                         </form>}
-                        {/* {couponState && <form onSubmit={() => setCouponState(false)}>
-                            <div>See your Mail for your coupon code!</div>
-                            <Btn type='submit'>Accept</Btn>
-                        </form>} */}
+
                     </div>
 
                 </PageContainer></>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import RenderItem from './RenderItem';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,13 +7,13 @@ import SortDropdown from '../SortDropdown'
 import { StyledStock, MiddlePage } from '../CONSTANTS';
 // <<<<<<< searchBar-2-manny
 import {
-    addItem,
+
     requestItemData, receivedItemData, receivedItemDataError,
 } from '../../actions';
 // =======
 // import { addItem, requestItemData, receivedItemData, receivedItemDataError } from '../../actions';
 import Sidebar from '../Sidebar';
-import { SideAndGrid, GridContainer, GridWrapper, PageContainer, DropdownContainer } from '../CONSTANTS';
+import { SideAndGrid, GridContainer, GridWrapper, PageContainer } from '../CONSTANTS';
 
 import shopImage from '../../images/stock/shop-image.jpg'
 import Header from '../Header/Header'
@@ -49,17 +49,6 @@ const ItemGrid = () => {
         }
     }, [pageCount, sortState]);
     //function that will handle page directing. 
-    const handlePageFinder = (e) => {
-        //change hard coded page value*******
-        if (e.target.value >= 1 && e.target.value <= 39) {
-            setPageCounter(e.target.value)
-        }
-        else {
-            //change for a modal.
-            window.alert(pageCount + 'This page does not exist.')
-        }
-    }
-
     const test = (val) => {
         setSortState(val.key)
     }
@@ -108,12 +97,6 @@ const ItemGrid = () => {
                                     →
                       </button>
                             </ButtonWrapper>
-                            {/* Search for for particular page? - is it necessary?*/}
-                            {/* Missing Styling */}
-                            {/* <form>
-                                <div>...current page: {pageCount}</div>
-                                <input type='text' onChange={handlePageFinder}></input>
-                            </form> */}
                         </GridContainer> : <MiddlePage><ClipLoader color={"#164C81"} size={100} /></MiddlePage>
                     }
                 </SideAndGrid>

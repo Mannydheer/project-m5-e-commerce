@@ -86,13 +86,10 @@ function App() {
         //to ensure
         //snakcbar item deleted - item added. !!!
         let received = await response.json();
-        console.log(received.success, 'CART UPDATED SUCCESSFULLY')
       }
       handleCartItemsForUser();
 
     }
-
-
   }, [cartState])
 
 

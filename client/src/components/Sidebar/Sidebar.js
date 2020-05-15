@@ -1,8 +1,7 @@
-import React, { useState, Component } from "react";
+import React, { useState, } from "react";
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import Search from '../Search/Search';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Select from 'react-select'
 
 
@@ -32,8 +31,6 @@ const Sidebar = () => {
 
 
     const { allCompanies } = useSelector(state => state.companiesReducer)
-    const allDataFetchSuccess = useSelector(items => items.dataItems.status);
-    const { status } = useSelector(state => state.companiesReducer)
 
     const [companyList, setCompanyList] = useState(null);
 

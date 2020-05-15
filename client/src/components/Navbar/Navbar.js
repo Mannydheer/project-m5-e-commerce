@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-// import { ShareIcons } from "./ShareIcons"
 import { FaDiceSix } from 'react-icons/fa'
 import { NavLink } from 'react-router-dom';
 import { FiShoppingCart } from 'react-icons/fi'
@@ -41,9 +40,6 @@ const Navbar = ({ setLoginState, loginState }) => {
 
 
     const currentPath = history.location.pathname;
-
-
-
 
     const [navbar, setNavbar] = useState(false);
     const [scroll, setScroll] = useState(false);
@@ -184,41 +180,19 @@ const Navbar = ({ setLoginState, loginState }) => {
 
 
                     <StyledUl >
-
-
                         <NavList style={(triggerSearchBar) ? { borderBottom: "3px solid transparent" } : { borderBottom: "3px solid transparent" }}>
                             <NavigationLink style={(triggerSearchBar) ? { opacity: "0", display: "none" } : { opacity: "1" }} exact to="/shop">Shop</NavigationLink>
                         </NavList>
-                        {/* <NavList>
-                        <NavigationLink style={(triggerSearchBar) ? { opacity: "0" } : { opacity: "1" }} exact to="/sellers">Sellers</NavigationLink>
-                    </NavList> */}
+
                         <NavList style={(triggerSearchBar) ? { borderBottom: "3px solid transparent" } : { borderBottom: "3px solid transparent" }}>
                             <NavigationLink style={(triggerSearchBar) ? { opacity: "0", display: "none" } : { opacity: "1" }} exact to="/cart"><FiShoppingCart style={(triggerSearchBar) ? { opacity: "0", display: "none" } : { opacity: "1" }} /> {cartCounter}</NavigationLink>
                         </NavList>
                         <NavList >
                             <FiSearch onClick={toggleSearchBar} style={{ fontSize: "1.2rem" }} />
                         </NavList>
-
-                        {/* <NavList>
-                        <NavigationLink exact to="/contact">Contact</NavigationLink>
-                    </NavList> */}
                     </StyledUl>
                     <Hamburger style={{ zIndex: "1200" }} onClick={toggleNavbar}>&#9776;</Hamburger>
-                    {/* <SearchInput placeholder="Search our products..." style={(triggerSearchBar) ?
-                        {
-                            opacity: "1",
-                            transition: "all 1s ease-in-out",
-                            width: "500px",
-                            zIndex: "10"
-                        }
-                        :
-                        {
-                            width: "0",
-                            opacity: "0",
-                            zIndex: "-10",
-                            transition: "all 500ms ease-in-out"
-                        }
-                    } /> */}
+
                     {allDataFetchSuccess === 'success' && <Search triggerSearchBar={triggerSearchBar} setScroll={setScroll} scroll={scroll}></Search>}
 
                 </StyledNav>
