@@ -132,8 +132,6 @@ export default function SignIn({ chatLoginColor, setLoginState }) {
             catch (err) {
                 console.log(err, 'CATCH ERROR')
             }
-
-
         }
         handleLogin();
 

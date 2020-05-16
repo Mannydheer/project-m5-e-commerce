@@ -35,6 +35,10 @@ import Error from '../Error/Error'
 import MailBox from '../Mailbox'
 
 
+export const serverUrl = "https://e-commerce-bootcamp.herokuapp.com"
+// export const serverUrl = 
+
+
 function App() {
 
   const dispatch = useDispatch();
@@ -45,11 +49,12 @@ function App() {
 
 
 
+  // export const serverUrl = "https://e-commerce-bootcamp.herokuapp.com"
 
   //Fetch ALL data. 
   useEffect(() => {
     dispatch(requestAllDataFromDataBase())
-    fetch('/allItemData')
+    fetch(`/allItemData`)
       .then(res => res.json())
       .then(data => dispatch(receiveAllDataFromDataBase(data)))
       .catch(() => dispatch(receiveAllDataFromDataBaseError()))
@@ -75,7 +80,7 @@ function App() {
 
       const handleCartItemsForUser = async () => {
 
-        let response = await fetch(`/storeCartItemsUser/${userLoggedIn.user.name}`, {
+        let response = await fetch(`storeCartItemsUser/${userLoggedIn.user.name}`, {
           method: "POST",
           headers: {
             'Accept': 'application/json',
