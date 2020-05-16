@@ -1,10 +1,11 @@
 'use strict';
+const cors = require('cors');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const path = require('path');
 //data file for items
-const items = require('./data/items.json');
 const { handleItemId, handleItemsData,
   handleCategory, handleCompany, handleSellers,
   handleAllData, handleRelatedItems, handleBodyItems,
@@ -13,21 +14,14 @@ const { handleItemId, handleItemsData,
 } = require('./handlers');
 
 
-
-const PORT = process.env.PORT || 4000;
-
-/*items.forEach((element, index) => {
-
-    if (index < 20) {
-      console.log(" testing for each", element.price)    }
-
-  });*/
-
-
-
-
+const port = process.env.PORT || 4000;
 var app = express()
+
+app.use(cors())
+
 app.use(function (req, res, next) {
+
+  res.header("Access-Control-Allow-Origin", "*")
   res.header(
     'Access-Control-Allow-Methods',
     'OPTIONS, HEAD, GET, PUT, POST, DELETE'
@@ -41,13 +35,10 @@ app.use(function (req, res, next) {
 app.use(morgan('tiny'))
 app.use(express.static('./server/assets'))
 app.use(bodyParser.json())
+
 app.use(express.urlencoded({ extended: false }))
 app.use('/', express.static(__dirname + '/'))
 
-
-
-// REST endpoints?
-// .get('/bacon', (req, res) => res.status(200).json('🥓'))
 
 
 //Item Data endpoint
@@ -83,7 +74,19 @@ app.get('/updateCoupon/:code', handleUpdateCoupon)
 
 app.get('/getEmails/:name', handleGetEmails)
 
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('client/build'));
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+//   })
+// }
 
 
-  .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
+app.listen(port, function (error) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.info(`==> 🌎  Listening on port ${port}.`);
+  }
+});

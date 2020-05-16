@@ -1,54 +1,44 @@
-# Wearables E-Commerce Project
 
-[See the list of TEAMS](__documentation/TEAMS.md)
+### E-Commerce Team Project - Full Stack
 
-You will make use of _everything_ that you have learned thus far in the bootcamp to build an e-commerce app that will showcase all of the provided _wearables_ items.
+Users can browse different items, add items to the cart and much more!
+Technologies: React, Node.js, Express, MongoDb - (MERN)
 
-The stack is React.Js, Redux, Node.Js, and styled-components.
+### Getting Started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Your node server should be RESTful and follow REST principles, at least to the extent we learned during the bootcamp.
+Go to the server directory. Run npm install/yarn install followed by npm start/yarn start. The server will be running on port 4000
 
-## Getting Started
+Go to the client directory. Run npm install/yarn install followed by npm start/yarn start. Accept to listen to FE on port 3000
 
-<img src="./server/assets/software-dev-path.jpg" style="width: 100%;" />
+### Flow for user.
 
-You have your assignment and your team. What should you do first? This will vary for every team, and even every team member.
+## Home
+### Home Page
+<img src="Screenshots/Home.png" alt="Home">
 
-**The important thing is to NOT just jump in and start coding!**
+### Shop
+<img src="Screenshots/Shop.png" alt="Shop">
 
-There probably shouldn't be any coding until very near the end of the first day.
 
-## Meet your Product Manager!
 
-Each team has been assigned a product manager. This person is in charge of answering questions, guiding you and basically preventing everything from falling apart!
 
-This person should be prevent for some of your team meetings but not all. PMs are super busy people and have multiple projects, people to manage.
+## Responsive Design
+<img src="Screenshots/Responsive.png" alt="Responsive">
 
-## Planning
+### Prerequisites
+-node.js, npm/yarn
 
-1. You will break into 3 groups (with your assigned PM.)
-2. Your PM will answer any initial questions, and give you more information, as required.
-3. Break into a separate meeting with just your team. \_Your PM will bounce from team to team to make sure you're on track.
-4. Time to use the [Kickoff Meeting Agenda](__documentation/KICKOFF_MEETING_AGENDA.md)
+### Built With
+Node.js, MongoDb- Backend
+React - FrontEnd
 
-### First team meeting
+### Authors
+Manider Dheer.
+Matteo, Myra, Harrison. (Team members.)
 
-It could also be a good/fun idea to give yourselves an original team name. :)
+### License
+This project is licensed under the MIT License - see the LICENSE.md file for details
 
-Your first team meeting should start with the [Kickoff Meeting Agenda](__documentation/KICKOFF_MEETING_AGENDa.md).
-
-[Successful Software Project Delivery in 10 Steps](https://www.appnovation.com/blog/successful-software-project-delivery-10-steps).
-
-💡 How a project starts is indicative of how it will end.
-
-## Teamwork
-
-The most important aspect of this project is the ability to work in a team. No matter your contribution to the project, yuo should understand the _full_ codebase. This will require that you
-
-- **review** each other's code
-- **ask** questions when you don't understand
-- **comment** your code extensively. _Always go for clarity over brevity._
-
-## GitHub
-
-see the [GITHUB Document](__documentation/GITHUB.md)
+### Acknowledgments
+Thank you to everyone in the team!

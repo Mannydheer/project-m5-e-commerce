@@ -1,8 +1,12 @@
 'use strict';
+const cors = require('cors');
+require('dotenv').config()
+
+
 
 //MONGODB
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://mannyDb:ZxkArtTdmzOWvHvr@cluster0-ucphp.mongodb.net/test?retryWrites=true&w=majority"
+const uri = process.env.MONGODB_URI;
 
 const dbName = 'Ecommerce';
 const collection = 'Items'
@@ -11,11 +15,6 @@ const collectionUsers = 'Users'
 const collectionCoupons = 'Coupons'
 const assert = require('assert')
 
-
-var ObjectId = require('mongodb').ObjectID;
-
-
-//
 
 //MONGODB INTEGRATION DONE. 
 const handleAllData = async (req, res) => {
@@ -81,6 +80,8 @@ const handleItemId = async (req, res) => {
 
 
 const handleItemsData = (req, res) => {
+
+    console.log('INSIDE ALL ITEMS DATA')
 
     let sort = req.query.sort
     let page = req.query.page; //1

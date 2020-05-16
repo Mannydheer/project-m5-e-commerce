@@ -29,12 +29,19 @@ const CartItem = (props) => {
       setSubtotal(props.price.slice(1) * props.quantity);
     }
   }, [handleQuantity]);
+
+  const handleRemoveItem = (e) => {
+    e.preventDefault();
+    dispatch(removeItem(props))
+  }
+
+
   return (
     <form>
       <Container>
         <Products>
           <ButtonContainer>
-            <StyledRemoveItemButton onClick={() => dispatch(removeItem(props))}>❌</StyledRemoveItemButton>
+            <StyledRemoveItemButton onClick={handleRemoveItem}>❌</StyledRemoveItemButton>
           </ButtonContainer>
           <ImageContainer src={props.imageSrc} />
           {/* manny - will show out of stock with new updated cart state */}

@@ -35,7 +35,7 @@ import Error from '../Error/Error'
 import MailBox from '../Mailbox'
 
 
-export const serverUrl = "https://e-commerce-bootcamp.herokuapp.com"
+// export const serverUrl = "https://e-commerce-bootcamp.herokuapp.com";
 // export const serverUrl = 
 
 
@@ -46,10 +46,6 @@ function App() {
   const userLoggedIn = useSelector(state => state.userReducer)
   //controls signup and login
   const [loginState, setLoginState] = useState(true)
-
-
-
-  // export const serverUrl = "https://e-commerce-bootcamp.herokuapp.com"
 
   //Fetch ALL data. 
   useEffect(() => {
@@ -64,7 +60,7 @@ function App() {
 
   React.useEffect(() => {
     dispatch(requestAllCompanies())
-    fetch('/sellers')
+    fetch(`/sellers`)
       .then(res => res.json())
       .then(data => dispatch(receiveAllCompanies(data)))
       .catch(() => dispatch(receiveAllCompaniesError()))
@@ -80,7 +76,7 @@ function App() {
 
       const handleCartItemsForUser = async () => {
 
-        let response = await fetch(`storeCartItemsUser/${userLoggedIn.user.name}`, {
+        let response = await fetch(`/storeCartItemsUser/${userLoggedIn.user.name}`, {
           method: "POST",
           headers: {
             'Accept': 'application/json',

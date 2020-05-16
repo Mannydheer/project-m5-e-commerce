@@ -18,7 +18,7 @@ import { SideAndGrid, GridContainer, GridWrapper, PageContainer } from '../CONST
 import shopImage from '../../images/stock/shop-image.jpg'
 import Header from '../Header/Header'
 import ClipLoader from "react-spinners/ClipLoader";
-// import {serverUrl} from '../App/App';
+// import { serverUrl } from '../App/App';
 
 
 // >>>>>>> master
@@ -38,7 +38,7 @@ const ItemGrid = () => {
         if (pageCount > 0 && pageCount <= 39) {
             //set the state to loading.
             dispatch(requestItemData())
-            fetch(`items?page=${pageCount}&limit=9&sort=${sortState}`)
+            fetch(`/items?page=${pageCount}&limit=9&sort=${sortState}`)
                 .then(res => res.json())
                 .then(data => dispatch(receivedItemData(data)))
                 .catch(() => dispatch(receivedItemDataError()))

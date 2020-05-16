@@ -155,7 +155,7 @@ const EachList = styled.li`
     padding: 5px 0; 
 
     &:hover {
-    background-color: pink;
+    opacity: 0.8;
 }
 `
 
