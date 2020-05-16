@@ -14,11 +14,18 @@ Go to the client directory. Run npm install/yarn install followed by npm start/y
 ### Flow for user.
 
 ## Home
-### Home Page
+### Home Page.
 <img src="Screenshots/Home.png" alt="Home">
 
-### Shop
+## Shop
+### Shop for different items - also options to filter by company, price, category, body-part.
 <img src="Screenshots/Shop.png" alt="Shop">
+
+### Item Details.
+<img src="Screenshots/Item.png" alt="Item">
+
+### Cart Details.
+<img src="Screenshots/Cart.png" alt="Cart">
 
 
 
